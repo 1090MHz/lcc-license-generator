@@ -5,6 +5,10 @@ set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
 set(LICENSECC_SHORT_LICENSE "BSD Software License")
 
 cmake_policy(SET CMP0048 NEW)
+# Use old FindBoost.cmake behavior instead of requiring BoostConfig.cmake
+if(POLICY CMP0167)
+    cmake_policy(SET CMP0167 OLD)
+endif()
 project (lccgen
 	VERSION 2.1.0
 	DESCRIPTION "License generator for licensecc" 
@@ -77,12 +81,12 @@ else(UNIX) #windows and linux crosscompiling for windows target
 		endif(${STATIC_RUNTIME})
 		add_definitions("/D _CRT_SECURE_NO_WARNINGS")
 		list(APPEND EXTERNAL_LIBS "bcrypt" "crypt32" "ws2_32" "iphlpapi")
-	else(MSVC)
+	else()
 	    if(MINGW)
 	        list(APPEND EXTERNAL_LIBS "-lcrypt32 -lbcrypt -lws2_32 -liphlpapi")
 	        set(CMAKE_EXE_LINKER_FLAGS "-static")
 	    endif(MINGW)
-	endif(MSVC)
+	endif()
 	set(pkg_config_dest "cmake/${PROJECT_NAME}")
 endif()
 
