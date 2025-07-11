@@ -2,19 +2,13 @@
 
 #include <boost/filesystem.hpp>
 #include <boost/test/unit_test.hpp>
-#include <boost/version.hpp>
-#if (BOOST_VERSION > 107000)
-#include <boost/test/tools/output_test_stream.hpp>
-#else
-#include <boost/test/output_test_stream.hpp>
-#endif
 #include <iostream>
 #include <build_properties.h>
 
 #include "../src/base_lib/base.h"
 #include "../src/ini/SimpleIni.h"
 #include "../src/license_generator/license.hpp"
-#include "cout_redirect.hpp"
+#include "file_redirect.hpp"
 
 namespace license {
 namespace test {
@@ -96,10 +90,8 @@ BOOST_AUTO_TEST_CASE(generate_license_with_relative_path) {
 }
 
 BOOST_AUTO_TEST_CASE(license_stdout) {
-	boost::test_tools::output_test_stream output;
+	file_redirect output;
 	{
-		cout_redirect guard(output.rdbuf());
-
 		License license(nullptr, MyGlobalFixture::project_path.string());
 		license.add_parameter(PARAM_FEATURE_NAMES, "my_fantastic_softwAre");
 		license.write_license();

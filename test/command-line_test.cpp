@@ -4,19 +4,13 @@
 #include <fstream>
 #include <boost/test/unit_test.hpp>
 #include <boost/filesystem.hpp>
-#include <boost/version.hpp>
-#if (BOOST_VERSION > 107000)
-#include <boost/test/tools/output_test_stream.hpp>
-#else
-#include <boost/test/output_test_stream.hpp>
-#endif
 #include <iostream>
 
 #include <build_properties.h>
 #include "../src/license_generator/command_line-parser.hpp"
 #include "../src/ini/SimpleIni.h"
 #include "../src/base_lib/base.h"
-#include "cout_redirect.hpp"
+#include "file_redirect.hpp"
 
 namespace fs = boost::filesystem;
 using namespace license;
@@ -127,9 +121,8 @@ BOOST_AUTO_TEST_CASE(issue_license_help) {
 	int argc = 4;
 	const char* argv1[] = {"lcc", "license", "issue", "-h"};
 	// initialize_project
-	boost::test_tools::output_test_stream output;
+	file_redirect output;
 	{
-		cout_redirect guard(output.rdbuf());
 		int result = CommandLineParser::parseCommandLine(argc, argv1);
 	}
 	string stdout_str = output.str();
@@ -158,9 +151,8 @@ BOOST_AUTO_TEST_CASE(init_project_name_wrong) {
 						   "--templates",
 						   mock_source.c_str()};
 	int result;
-	boost::test_tools::output_test_stream output;
+	file_redirect output;
 	{
-		cout_redirect guard(output.rdbuf());
 		result = CommandLineParser::parseCommandLine(argc, argv1);
 	}
 	string stdout_str = output.str();
