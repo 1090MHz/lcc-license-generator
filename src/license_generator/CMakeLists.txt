@@ -4,6 +4,11 @@ ADD_LIBRARY(license_generator_lib
 	STATIC command_line-parser.cpp license.cpp project.cpp ../ini/ConvertUTF.cpp
 	$<TARGET_OBJECTS:lcc_base> )
 
+# Suppress MSVC C4244 warning from third-party inja library
+if(MSVC)
+	target_compile_options(license_generator_lib PRIVATE /wd4244)
+endif()
+
 if(UNIX OR OPENSSL_FOUND)
 	target_link_libraries(license_generator_lib PUBLIC
 			     ${Boost_LIBRARIES} OpenSSL::Crypto ${EXTERNAL_LIBS} ${CMAKE_DL_LIBS})
