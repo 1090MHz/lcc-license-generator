@@ -9,6 +9,8 @@ cmake_policy(SET CMP0048 NEW)
 if(POLICY CMP0167)
     cmake_policy(SET CMP0167 OLD)
 endif()
+# Enable modern MSVC runtime library selection
+cmake_policy(SET CMP0091 NEW)
 project (lccgen
 	VERSION 2.1.0
 	DESCRIPTION "License generator for licensecc" 
