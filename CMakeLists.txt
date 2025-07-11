@@ -38,6 +38,8 @@ if(UNIX) #this is true for all the linux systems but not for cross compiling "li
 	if(NOT OPENSSL_FOUND)
 		MESSAGE(SEND_ERROR "Openssl not found - generator - required in Linux")
 	endif()
+	# For static builds on Unix, use static linking
+	if(CMAKE_BUILD_TYPE STREQUAL "Release" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
 		set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--whole-archive -static-libgcc -static-libstdc++ -static")
 		unset(CMAKE_DL_LIBS)
 	endif()
