@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.10...4.0 FATAL_ERROR)
 
-SET(CMAKE_DISABLE_SOURCE_CHANGES ON)
-SET(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
-SET(LICENSECC_SHORT_LICENSE "BSD Software License")
+set(CMAKE_DISABLE_SOURCE_CHANGES ON)
+set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
+set(LICENSECC_SHORT_LICENSE "BSD Software License")
 
 cmake_policy(SET CMP0048 NEW)
 project (lccgen
@@ -12,13 +12,13 @@ project (lccgen
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/" "${CMAKE_ROOT}/Modules/")
 
 include(utilities) #import module utilities.cmake
 
 #Not sure about this. My system doesn't support binfmt misc
 IF( ( CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux" ) AND CMAKE_CROSSCOMPILING AND NOT DEFINED CMAKE_CROSSCOMPILING_EMULATOR )
-	SET(CMAKE_CROSSCOMPILING_EMULATOR "wine")	
+	set(CMAKE_CROSSCOMPILING_EMULATOR "wine")	
 ENDIF()
 
 SET ( OPENSSL_USE_STATIC_LIBS ON )
@@ -27,17 +27,16 @@ IF(OPENSSL_FOUND)
 	add_definitions(-DHAS_OPENSSL)
 	include_directories(${OPENSSL_INCLUDE_DIR})
 	MESSAGE(STATUS "Found openssl version ${OPENSSL_VERSION} - generator")
-ENDIF(OPENSSL_FOUND)
+endif()
 
 if(UNIX) #this is true for all the linux systems but not for cross compiling "linux->windows"
 	#openssl required for linux
-	IF(NOT OPENSSL_FOUND)
+	if(NOT OPENSSL_FOUND)
 		MESSAGE(SEND_ERROR "Openssl not found - generator - required in Linux")
-	ENDIF(NOT OPENSSL_FOUND)
-	IF(${STATIC_RUNTIME})
+	endif()
 		set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--whole-archive -static-libgcc -static-libstdc++ -static")
 		unset(CMAKE_DL_LIBS)
-	ENDIF(${STATIC_RUNTIME})
+	endif()
 	
     find_package(Threads)
 	if(THREADS_HAVE_PTHREAD_ARG)
@@ -54,15 +53,15 @@ if(UNIX) #this is true for all the linux systems but not for cross compiling "li
 		find_package(ZLIB REQUIRED)
 		list(APPEND EXTERNAL_LIBS ${ZLIB_LIBRARIES})
 		MESSAGE(STATUS "Found zlib version ${ZLIB_VERSION_STRING} - generator")
-	ENDIF(OPENSSL_VERSION VERSION_LESS_EQUAL 1.0.2)
+	endif()
 
 	find_program( MEMORYCHECK_COMMAND valgrind )
 	set( MEMORYCHECK_COMMAND_OPTIONS "--trace-children=yes --leak-check=full" ) 
 	set(pkg_config_dest "lib/cmake/${PROJECT_NAME}")
 else(UNIX) #windows and linux crosscompiling for windows target
-	IF(NOT OPENSSL_FOUND)
+	if(NOT OPENSSL_FOUND)
 		MESSAGE(STATUS "Openssl not found - generator - configuring libary without it.")
-	ENDIF(NOT OPENSSL_FOUND)
+	endif()
 	if(MSVC)
 		include(target_arch)
 		target_architecture( TARGET_ARCHITECTURE )
@@ -81,11 +80,11 @@ else(UNIX) #windows and linux crosscompiling for windows target
 	else(MSVC)
 	    if(MINGW)
 	        list(APPEND EXTERNAL_LIBS "-lcrypt32 -lbcrypt -lws2_32 -liphlpapi")
-	        SET(CMAKE_EXE_LINKER_FLAGS "-static")
+	        set(CMAKE_EXE_LINKER_FLAGS "-static")
 	    endif(MINGW)
 	endif(MSVC)
 	set(pkg_config_dest "cmake/${PROJECT_NAME}")
-endif(UNIX)
+endif()
 
 #bug in cmake win32 - can't find boost compiled with mingw 
 if(WIN32 AND "x${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}" STREQUAL "x")
@@ -118,7 +117,7 @@ message( STATUS "CXX compiler flags debug  : " ${CMAKE_CXX_FLAGS_DEBUG})
 message( STATUS "CXX compiler flags release: " ${CMAKE_CXX_FLAGS_RELEASE})
 if(CMAKE_BUILD_TYPE)
   message( STATUS "Build type                : " ${CMAKE_BUILD_TYPE})
-endif(CMAKE_BUILD_TYPE)
+endif()
 message( STATUS "Install prefix            : " ${CMAKE_INSTALL_PREFIX})
 #include (build directory)/include to find build_properties.h
 message( STATUS "External libs             : " ${EXTERNAL_LIBS})
@@ -128,10 +127,10 @@ add_subdirectory("src/license_generator")
 
 INCLUDE(CTest)
 IF(BUILD_TESTING)
-    SET(BUILDNAME "${BUILDNAME}" CACHE STRING "Name of build on the dashboard")
+    set(BUILDNAME "${BUILDNAME}" CACHE STRING "Name of build on the dashboard")
 	MARK_AS_ADVANCED(BUILDNAME)
 	add_subdirectory("test")
-ENDIF(BUILD_TESTING)
+endif()
 
 set(CPACK_GENERATOR "DEB;TBZ2;RPM")
 set(CPACK_PACKAGE_NAME "lcc-generator")
