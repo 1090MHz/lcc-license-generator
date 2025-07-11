@@ -10,7 +10,14 @@
 #include <stdexcept>
 #include <algorithm>
 
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4244) // conversion from 'type1' to 'type2', possible loss of data
+#endif
 #include "../inja/inja.hpp"
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 #include "../base_lib/base.h"
 #include "../base_lib/crypto_helper.hpp"
 #include "project.hpp"
