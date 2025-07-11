@@ -102,7 +102,7 @@ if(WIN32 AND "x${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}" STREQUAL "x")
     message(STATUS "Compiler architecture: ${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}")
 endif()
 
-SET( Boost_USE_STATIC_LIBS ON )
+set(Boost_USE_STATIC_LIBS ON)
 find_package(Boost REQUIRED COMPONENTS date_time filesystem program_options system unit_test_framework)
 
 #set below in case of dynamic linking in debug.
